@@ -1,0 +1,25 @@
+{
+  "name": "awhile-server",
+  "version": "1.0.0",
+  "description": "egg",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/awhile-design/awhile-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/awhile-design/awhile-server/issues"
+  },
+  "homepage": "https://github.com/awhile-design/awhile-server#readme",
+  "dependencies": {
+    "egg": "^2.3.0"
+  },
+  "devDependencies": {
+    "egg-bin": "^4.3.7"
+  }
+}
