@@ -4,7 +4,8 @@
   "description": "egg",
   "main": "index.js",
   "scripts": {
-    "dev": "egg-bin dev"
+    "dev": "EGG_SERVER_ENV=local egg-bin dev",
+    "prod": "EGG_SERVER_ENV=prod egg-bin dev"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,8 @@
   },
   "homepage": "https://github.com/awhile-design/awhile-server#readme",
   "dependencies": {
-    "egg": "^2.3.0"
+    "egg": "^2.3.0",
+    "egg-mysql": "^3.0.0"
   },
   "devDependencies": {
     "egg-bin": "^4.3.7"
