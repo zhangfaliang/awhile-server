@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/awhile-design/awhile-server#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "egg": "^2.3.0",
-    "egg-mysql": "^3.0.0"
+    "egg-mysql": "^3.0.0",
+    "randomdata": "^0.0.2"
   },
   "devDependencies": {
     "egg-bin": "^4.3.7"
