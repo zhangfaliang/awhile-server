@@ -40,12 +40,13 @@ class UserController extends Controller {
         if (result.affectedRows === 1) {
           const userTokenNew = await this.service.user.checkUserToken(userInfo.id);
           ctx.set('token', userTokenNew.token);
+          this.success({ token: userTokenNew.token });
         }
       } else {
         const userToken = await this.service.user.saveUserToken(_userData);
         ctx.set('token', userToken.token);
+        this.success({ token: userToken.token });
       }
-      this.success(userInfo);
     } else {
       this.fail(10005, '密码错误')
     }
@@ -80,7 +81,10 @@ class UserController extends Controller {
       this.fail(11000, 'toekn过期，请重新登录');
     } else {
       const userInfo = await ctx.service.user.find(decoded.userId);
-      this.success(userInfo);
+      this.success({
+        username: userInfo.username,
+        avatar: userInfo.avatar
+      });
     };
   };
 }
