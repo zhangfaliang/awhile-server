@@ -5,15 +5,49 @@ class UserController extends Controller {
     super(ctx);
   }
   async login() {
+    const { ctx, app, service } = this;
     const { username, password } = this.requestBody();
     if (!username || !password) {
       return this.fail(10000, '用户名或密码不能为空');
     }
 
-    const userInfo = await ctx.service.user.find(userId);
+    const userInfo = await ctx.service.user.getUserInfo(username);
 
     if (!userInfo) {
       return this.fail(10001, '登录失败，该用户名未注册');
+    }
+    const passwordBrypto = userInfo.password;
+
+    if (await service.encrypt.checkBrypto(password, passwordBrypto)) {
+      const _now = new Date();
+      const _nowT = _now.getTime();
+      const _expireT = _nowT + 1000 * 60 * 60 * 24 * 7;
+
+      const token = this.app.jwt.sign({
+        exp: _expireT,
+        userId: userInfo.id
+      }, 'secret');
+
+      const _userData = {
+        user_id: userInfo.id,
+        create_time: _nowT,
+        expire_time: _expireT,
+        token,
+      };
+      const userTokenOld = await this.service.user.checkUserToken(userInfo.id);
+      if (userTokenOld) {
+        const result = await this.service.user.updateUserToken({ id: userTokenOld.id, ..._userData });
+        if (result.affectedRows === 1) {
+          const userTokenNew = await this.service.user.checkUserToken(userInfo.id);
+          ctx.set('token', userTokenNew.token);
+        }
+      } else {
+        const userToken = await this.service.user.saveUserToken(_userData);
+        ctx.set('token', userToken.token);
+      }
+      this.success(userInfo);
+    } else {
+      this.fail(10005, '密码错误')
     }
 
   }
@@ -28,29 +62,27 @@ class UserController extends Controller {
       return this.fail(10004, '该用户已注册')
     }
     const passwordEncrypt = await this.service.encrypt.getBrypto(password);
-
+    const time = new Date().getTime();
     await this.service.user.resign({
       username,
       password: passwordEncrypt,
+      create_time: time,
+      last_login_time: time,
     });
 
     this.success('注册成功');
   }
 
-  async info() {
+  async profile() {
     const { ctx, service } = this;
-    const userId = ctx.params.id;
-    const userInfo = await ctx.service.user.find(userId);
-    const csrftoken = ctx.cookies.get('csrfToken');
-    ctx.set('x-csrf-token', csrftoken);
-    console.log(csrftoken, 222222222222)
-    if (userInfo) {
-      this.success(userInfo);
+    const decoded = this.validatorToken(ctx.get('token'));
+    if (!decoded) {
+      this.fail(11000, 'toekn过期，请重新登录');
     } else {
-      this.fail(10000, '查无此人');
-    }
-    // ctx.body = userInfo;
-  }
+      const userInfo = await ctx.service.user.find(decoded.userId);
+      this.success(userInfo);
+    };
+  };
 }
 
 module.exports = UserController;

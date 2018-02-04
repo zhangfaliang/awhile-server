@@ -20,6 +20,8 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "egg": "^2.3.0",
+    "egg-cors": "^2.0.0",
+    "egg-jwt": "^2.2.1",
     "egg-mysql": "^3.0.0",
     "randomdata": "^0.0.2"
   },

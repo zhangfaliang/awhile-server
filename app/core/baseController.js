@@ -1,9 +1,6 @@
 const { Controller } = require('egg');
 class BaseController extends Controller {
-  constructor(ctx){
-    super(ctx);
-    console.log(ctx.request,'===')
-  }
+
   requestBody() {
     return this.ctx.request.body;
   }
@@ -19,6 +16,10 @@ class BaseController extends Controller {
       code,
       msg,
     };
+  }
+
+  validatorToken(token) {
+    return this.app.jwt.decode(token);
   }
 }
 module.exports = BaseController;
