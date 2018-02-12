@@ -1,8 +1,13 @@
-const Controller = require('egg').Controller;
+const Controller = require('../core/base/baseController')
 
+function readonly(target, name, descriptor){
+  descriptor.writable = false;
+  return descriptor;
+}
 class HomeController extends Controller {
   async index() {
-    this.ctx.body = 'Hello world';
+    const {ctx} = this;
+    this.success(ctx.app.cities);
   }
 }
 

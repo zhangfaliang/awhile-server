@@ -2,6 +2,19 @@ module.exports = app => {
   const config = {};
   config.keys = app.name + '_20180101';
 
+  config.middleware = ['hello'];
+
+  config.hello = {
+    name: 'hello word'
+  };
+
+  config.view = {
+    defaultViewEngine: 'nunjucks',
+    mapping: {
+      '.nj': 'nunjucks',
+    },
+  };
+
   config.mysql = {
     // 单数据库信息配置
     client: {
