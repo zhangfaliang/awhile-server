@@ -4,6 +4,12 @@ class UserService extends Service {
     return await this.app.mysql.get('user', { id: id });
   }
 
+  async getCurrentUser(){
+    const {ctx} = this;
+    const decoded = this.app.jwt.decode(ctx.get('token'));
+    return this.find(decoded.userId);
+  }
+
   async getUserInfo(username) {
     return await this.app.mysql.get('user', { username });
   }

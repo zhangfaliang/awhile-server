@@ -43,9 +43,11 @@ class UserController extends Controller {
           this.success({ token: userTokenNew.token });
         }
       } else {
-        const userToken = await this.service.user.saveUserToken(_userData);
-        ctx.set('token', userToken.token);
-        this.success({ token: userToken.token });
+        const result = await this.service.user.saveUserToken(_userData);
+        if(result.affectedRows === 1){
+          ctx.set('token', token);
+          this.success({ token });
+        }
       }
     } else {
       this.fail(10005, '密码错误')
@@ -77,16 +79,13 @@ class UserController extends Controller {
   async profile() {
     const { ctx, service } = this;
     const decoded = this.validatorToken(ctx.get('token'));
-    if (!decoded) {
-      this.fail(11000, 'toekn过期，请重新登录');
-    } else {
-      const userInfo = await ctx.service.user.find(decoded.userId);
-      this.success({
-        username: userInfo.username,
-        avatar: userInfo.avatar
-      });
-    };
-  };
+
+    const userInfo = await ctx.service.user.find(decoded.userId);
+    this.success({
+      username: userInfo.username,
+      avatar: userInfo.avatar
+    });
+  }
 }
 
 module.exports = UserController;
