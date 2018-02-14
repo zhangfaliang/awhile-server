@@ -2,6 +2,21 @@ module.exports = app => {
   const config = {};
   config.keys = app.name + '_20180101';
 
+  config.middleware = ['checkAuth', 'authAccess'];
+
+  config.checkAuth = {
+    match(ctx) {
+       const reg = /login|resign/;
+      return !reg.test(ctx.url);
+    }
+  };
+
+  config.authAccess = {
+    match(ctx) {
+      return ctx.url.indexOf('admin') > -1;
+    }
+  };
+
   config.view = {
     defaultViewEngine: 'nunjucks',
     mapping: {

@@ -44,7 +44,61 @@ class UserController extends Controller {
         }
       } else {
         const result = await this.service.user.saveUserToken(_userData);
-        if(result.affectedRows === 1){
+        if (result.affectedRows === 1) {
+          ctx.set('token', token);
+          this.success({ token });
+        }
+      }
+    } else {
+      this.fail(10005, '密码错误')
+    }
+
+  }
+
+  async adminLogin() {
+    const { ctx, app, service } = this;
+    const { username, password } = this.requestBody();
+    if (!username || !password) {
+      return this.fail(10000, '用户名或密码不能为空');
+    }
+
+    const userInfo = await ctx.service.user.getUserInfo(username);
+
+    if (!userInfo) {
+      return this.fail(10001, '登录失败，该用户名未注册');
+    }
+    if (userInfo.type !== 1) {
+      return this.fail(20001, '没有权限');
+    }
+    const passwordBrypto = userInfo.password;
+
+    if (await service.encrypt.checkBrypto(password, passwordBrypto)) {
+      const _now = new Date();
+      const _nowT = _now.getTime();
+      const _expireT = _nowT + 1000 * 60 * 60 * 24 * 7;
+
+      const token = this.app.jwt.sign({
+        exp: _expireT,
+        userId: userInfo.id
+      }, 'secret');
+
+      const _userData = {
+        user_id: userInfo.id,
+        create_time: _nowT,
+        expire_time: _expireT,
+        token,
+      };
+      const userTokenOld = await this.service.user.checkUserToken(userInfo.id);
+      if (userTokenOld) {
+        const result = await this.service.user.updateUserToken({ id: userTokenOld.id, ..._userData });
+        if (result.affectedRows === 1) {
+          const userTokenNew = await this.service.user.checkUserToken(userInfo.id);
+          ctx.set('token', userTokenNew.token);
+          this.success({ token: userTokenNew.token });
+        }
+      } else {
+        const result = await this.service.user.saveUserToken(_userData);
+        if (result.affectedRows === 1) {
           ctx.set('token', token);
           this.success({ token });
         }
@@ -71,6 +125,7 @@ class UserController extends Controller {
       password: passwordEncrypt,
       create_time: time,
       last_login_time: time,
+      type: 2
     });
 
     this.success('注册成功');
