@@ -6,9 +6,9 @@ class AdminMenuController extends Controller {
     const getCurrentUser = await ctx.service.user.getCurrentUser();
     const getCurrentUserAuthAccess = await ctx.service.authAccess.getCurrentUserAuthAccess();
     const getAllMenu = await ctx.service.admin.menu.get();
-    if(getCurrentUser.id === 1){
+    if (getCurrentUser.id === 1) {
       this.success(getAllMenu);
-    }else{
+    } else {
       this.success(getCurrentUserAuthAccess);
     }
   }
@@ -16,7 +16,7 @@ class AdminMenuController extends Controller {
   async add() {
     const { ctx, app, service } = this;
     const requestBody = this.requestBody();
-    if (!requestBody.parent_id || !requestBody.name || !requestBody.action) {
+    if (requestBody.parent_id === 'undefined' || requestBody.name === 'undefined' || requestBody.action === 'undefined') {
       return this.fail(11000, '缺少参数');
     }
     const data = await ctx.service.admin.menu.add(requestBody);
