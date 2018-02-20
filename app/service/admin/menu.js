@@ -30,5 +30,23 @@ class MenuService extends BaseService {
       return '添加失败'
     }
   }
+
+  async update(params) {
+    const result = await this.app.mysql.update('admin_menu', { ...params });
+    if (result.affectedRows === 1) {
+      return '更新成功'
+    } else {
+      return '更新失败'
+    }
+  }
+
+  async delete(params) {
+    const result = await this.app.mysql.delete('admin_menu', { ...params });
+    if (result.affectedRows === 1) {
+      return '删除成功'
+    } else {
+      return '删除失败'
+    }
+  }
 }
 module.exports = MenuService;

@@ -16,10 +16,30 @@ class AdminMenuController extends Controller {
   async add() {
     const { ctx, app, service } = this;
     const requestBody = this.requestBody();
-    if (requestBody.parent_id === 'undefined' || requestBody.name === 'undefined' || requestBody.action === 'undefined') {
+    if (!requestBody.parent_id || !requestBody.name.trim() || !requestBody.action.trim()) {
       return this.fail(11000, '缺少参数');
     }
     const data = await ctx.service.admin.menu.add(requestBody);
+    this.success(data);
+  }
+
+  async edit() {
+    const { ctx, app, service } = this;
+    const requestBody = this.requestBody();
+    if (!requestBody.parent_id || !requestBody.name.trim() || !requestBody.action.trim()) {
+      return this.fail(11000, '缺少参数');
+    }
+    const data = await ctx.service.admin.menu.update(requestBody);
+    this.success(data);
+  }
+
+  async delete() {
+    const { ctx, app, service } = this;
+    const requestBody = this.requestBody();
+    if (!requestBody.id) {
+      return this.fail(11000, '缺少参数');
+    }
+    const data = await ctx.service.admin.menu.delete(requestBody);
     this.success(data);
   }
 }
