@@ -16,6 +16,24 @@ class RoleService extends BaseService {
       return '添加失败'
     }
   }
+
+  async update(params) {
+    const result = await this.app.mysql.update('role', { ...params });
+    if (result.affectedRows === 1) {
+      return '更新成功'
+    } else {
+      return '更新失败'
+    }
+  }
+
+  async delete(params) {
+    const result = await this.app.mysql.delete('role', { ...params });
+    if (result.affectedRows === 1) {
+      return '删除成功'
+    } else {
+      return '删除失败'
+    }
+  }
 }
 
 module.exports = RoleService;
