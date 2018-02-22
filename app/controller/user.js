@@ -70,9 +70,13 @@ class UserController extends Controller {
     if (userInfo.type !== 1) {
       return this.fail(20001, '没有权限');
     }
+   
     const passwordBrypto = userInfo.password;
 
     if (await service.encrypt.checkBrypto(password, passwordBrypto)) {
+      if (userInfo.status !== 1) {
+        return this.fail(20000, '该用户被禁用，请联系管理员');
+      }
       const _now = new Date();
       const _nowT = _now.getTime();
       const _expireT = _nowT + 1000 * 60 * 60 * 24 * 7;

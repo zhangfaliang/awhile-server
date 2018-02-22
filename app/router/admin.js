@@ -8,6 +8,6 @@ module.exports = app => {
 
   router.get('/admin/role/get', controller.admin.role.get);
   router.post('/admin/role/add', controller.admin.role.add);
-  router.post('/admin/role/edit', controller.admin.role.edit);
-  router.post('/admin/role/delete', controller.admin.role.delete);
+  // router.post('/admin/role/edit', controller.admin.role.edit);
+  // router.post('/admin/role/delete', controller.admin.role.delete);
 };
