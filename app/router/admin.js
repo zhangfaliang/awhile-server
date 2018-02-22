@@ -5,4 +5,7 @@ module.exports = app => {
   router.post('/admin/menu/add', controller.admin.menu.add);
   router.post('/admin/menu/edit', controller.admin.menu.edit);
   router.post('/admin/menu/delete', controller.admin.menu.delete);
+
+  router.get('/admin/role/get', controller.admin.role.get);
+  router.post('/admin/role/add', controller.admin.role.add);
 };
